@@ -1,0 +1,27 @@
+varying vec2 v_vTexcoord;
+varying vec4 v_vColour;
+
+
+
+float warp(float x) {
+    return 0.5 - sin(asin(1.0 - 2.0 * x) / 2.0);
+}
+
+vec4 darken(float x, vec4 color) {
+    float pos = x;
+    if (x > 0.5) {
+    pos = 1.0 - x;
+    }
+    float factor = min(warp(pos) * 2.7, 1.0);
+    return vec4(color.x * factor,  color.y * factor, color.z * factor, color.w);
+}
+
+void main()
+{
+    vec2 scaledTexcoord = vec2(warp(v_vTexcoord.x), v_vTexcoord.y);
+    vec4 scaledColor = darken(v_vTexcoord.x, v_vColour);
+    
+        gl_FragColor =  scaledColor * texture2D( gm_BaseTexture, scaledTexcoord );
+    
+}
+
